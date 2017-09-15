@@ -9,12 +9,6 @@ SRC_URI = "http://freedesktop.org/software/pulseaudio/releases/${BP}.tar.xz \
            file://0004-card-remove-pa_card_new_data.active_profile.patch \
            file://0005-alsa-set-availability-for-some-unavailable-profiles.patch \
            file://volatiles.04_pulse \
-           file://default.pa \
-           file://system.pa \
-           file://bluetooth.conf \
-           file://pulseaudio.service \
-           file://pulseaudio-system.conf \
-           file://10-local.rules \
 "
 SRC_URI[md5sum] = "da7162541b3a9bc20576dbd0d7d1489a"
 SRC_URI[sha256sum] = "c3d3d66b827f18fbe903fe3df647013f09fc1e2191c035be1ee2d82a9e404686"

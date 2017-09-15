@@ -25,7 +25,6 @@ WIFI_SUPPORT = " \
     iw \
     pulseaudio \
     pulseaudio-server \
-    alsa-plugins-pulseaudio-conf \
     wlconf \
     wl18xx-fw \
     wireless-tools \

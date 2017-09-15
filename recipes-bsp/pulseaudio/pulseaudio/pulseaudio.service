@@ -1,8 +1,0 @@
-[Unit]
-Description=Pulse Audio
-After=bb-wl18xx-bluetooth.service
-[Service]
-Type=simple
-ExecStart=/usr/bin/pulseaudio --system --disallow-exit --disable-shm
-[Install]
-WantedBy=multi-user.target

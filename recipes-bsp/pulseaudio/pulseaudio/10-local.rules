@@ -1,2 +1,0 @@
-# Power up bluetooth when hci0 is discovered
-ACTION=="add", KERNEL=="hci0", RUN+="/bin/hciconfig hci0 up"

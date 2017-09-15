@@ -20,23 +20,23 @@ inherit autotools bash-completion pkgconfig useradd gettext perlnative bluetooth
 USE_NLS = "yes"
 
 EXTRA_OECONF = "\
-    --disable-hal-compat \
-    --disable-orc \
-    --enable-tcpwrap=no \
-    --with-access-group=audio \
-    --disable-openssl \
-    --disable-xen \
-    --with-database=simple \
-    --without-fftw \
-    --without-zsh-completion-dir \
-    --with-udev-rules-dir=`pkg-config --variable=udevdir udev`/rules.d \
+		--disable-hal-compat \
+		--disable-orc \
+		--enable-tcpwrap=no \
+		--with-access-group=audio \
+		--disable-openssl \
+		--disable-xen \
+		--with-database=simple \
+		--without-fftw \
+		--without-zsh-completion-dir \
+		--with-udev-rules-dir=`pkg-config --variable=udevdir udev`/rules.d \
                 ac_cv_header_valgrind_memcheck_h=no \
                 --disable-tests \
 "
 
 # soxr (the SoX Resampler library) doesn't seem to be currently packaged in
 # oe-core nor meta-oe, so let's not add a PACKAGECONFIG entry for it for now.
-# EXTRA_OECONF += "--without-soxr"
+EXTRA_OECONF += "--without-soxr"
 
 PACKAGECONFIG ??= "${@bb.utils.contains('DISTRO_FEATURES', 'bluetooth', '${BLUEZ}', '', d)} \
                    ${@bb.utils.contains('DISTRO_FEATURES', 'zeroconf', 'avahi', '', d)} \
@@ -52,7 +52,7 @@ PACKAGECONFIG[bluez4] = "--enable-bluez4,--disable-bluez4,bluez4 sbc"
 PACKAGECONFIG[bluez5] = "--enable-bluez5,--disable-bluez5,bluez5 sbc"
 PACKAGECONFIG[ofono] = "--enable-bluez5-ofono-headset,--disable-bluez5-ofono-headset,ofono"
 PACKAGECONFIG[gtk] = "--enable-gtk3,--disable-gtk3,gtk+3"
-PACKAGECONFIG[systemd] = "--enable-systemd-daemon --enable-systemd-login --enable-systemd-journal --with-systemduserunitdir=${systemd_unitdir}/system,--disable-systemd-daemon --disable-systemd-login --disable-systemd-journal,systemd"
+PACKAGECONFIG[systemd] = "--enable-systemd-daemon --enable-systemd-login --enable-systemd-journal --with-systemduserunitdir=${systemd_user_unitdir},--disable-systemd-daemon --disable-systemd-login --disable-systemd-journal,systemd"
 PACKAGECONFIG[x11] = "--enable-x11,--disable-x11,virtual/libx11 libxtst libice libsm libxcb"
 PACKAGECONFIG[avahi] = "--enable-avahi,--disable-avahi,avahi"
 PACKAGECONFIG[jack] = "--enable-jack,--disable-jack,jack"
@@ -75,29 +75,21 @@ OE_LT_RPATH_ALLOW = "any"
 OE_LT_RPATH_ALLOW[export]="1"
 
 set_cfg_value () {
-  sed -i -e "s/\(; *\)\?$2 =.*/$2 = $3/" "$1"
-  if ! grep -q "^$2 = $3\$" "$1"; then
-    die "Use of sed to set '$2' to '$3' in '$1' failed"
-  fi
+	sed -i -e "s/\(; *\)\?$2 =.*/$2 = $3/" "$1"
+	if ! grep -q "^$2 = $3\$" "$1"; then
+		die "Use of sed to set '$2' to '$3' in '$1' failed"
+	fi
 }
 
 do_compile_append () {
-  if ${@bb.utils.contains('PACKAGECONFIG', 'autospawn-for-root', 'true', 'false', d)}; then
-    set_cfg_value src/client.conf allow-autospawn-for-root yes
-  fi
+	if ${@bb.utils.contains('PACKAGECONFIG', 'autospawn-for-root', 'true', 'false', d)}; then
+		set_cfg_value src/client.conf allow-autospawn-for-root yes
+	fi
 }
 
 do_install_append() {
-  install -d ${D}${sysconfdir}/default/volatiles
-  install -d ${D}${sysconfdir}/udev/rules.d
-
-  install -m 0644 ${WORKDIR}/10-local.rules ${D}${sysconfdir}/udev/rules.d/10-local.rules
-  install -m 0644 ${WORKDIR}/pulseaudio-system.conf ${D}${sysconfdir}/system.d/pulseaudio-system.conf
-  install -m 0644 ${WORKDIR}/bluetooth.conf ${D}${sysconfdir}/system.d/system/bluetooth.conf
-
-  install -m 0644 ${WORKDIR}/volatiles.04_pulse  ${D}${sysconfdir}/default/volatiles/volatiles.04_pulse
-  install -m 0644 ${WORKDIR}/default.pa  ${D}${sysconfdir}/pulse/default.pa
-  install -m 0644 ${WORKDIR}/system.pa  ${D}${sysconfdir}/pulse/system.pa
+	install -d ${D}${sysconfdir}/default/volatiles
+	install -m 0644 ${WORKDIR}/volatiles.04_pulse  ${D}${sysconfdir}/default/volatiles/volatiles.04_pulse
 }
 
 USERADD_PACKAGES = "pulseaudio-server"
@@ -131,9 +123,9 @@ FILES_libpulse-mainloop-glib = "${libdir}/libpulse-mainloop-glib.so.*"
 FILES_${PN}-dev += "${libdir}/pulse-${PV}/modules/*.la ${datadir}/vala ${libdir}/cmake"   
 FILES_${PN}-conf = "${sysconfdir}"
 FILES_${PN}-bin += "${sysconfdir}/default/volatiles/volatiles.04_pulse"
-FILES_${PN}-server = "${bindir}/pulseaudio ${bindir}/start-* ${sysconfdir} ${bindir}/pactl */udev/rules.d/*.rules */*/udev/rules.d/*.rules ${systemd_unitdir}/system/*"
+FILES_${PN}-server = "${bindir}/pulseaudio ${bindir}/start-* ${sysconfdir} ${bindir}/pactl */udev/rules.d/*.rules */*/udev/rules.d/*.rules ${systemd_user_unitdir}/*"
 
-SYSTEMD_PACKAGES = "${PN}-server"
+#SYSTEMD_PACKAGES = "${PN}-server"
 SYSTEMD_SERVICE_${PN}-server = "pulseaudio.service"
 
 FILES_${PN}-misc = "${bindir}/* ${libdir}/pulseaudio/libpulsedsp.so"
@@ -184,13 +176,6 @@ RDEPENDS_pulseaudio-server = " \
     pulseaudio-module-suspend-on-idle \
     pulseaudio-module-position-event-sounds \
     pulseaudio-module-role-cork \
-    pulseaudio-module-bluetooth-discover \
-    pulseaudio-module-bluetooth-policy \
-    pulseaudio-module-switch-on-connect \
-    pulseaudio-module-bluez5-device \
-    pulseaudio-module-bluez5-discover \
-    pulseaudio-module-systemd-login \
-    pulseaudio-module-loopback \
     pulseaudio-module-switch-on-port-available"
 
 # If the server is installed, it's usually desirable to make ALSA applications

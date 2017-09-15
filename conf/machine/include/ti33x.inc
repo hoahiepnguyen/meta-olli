@@ -20,9 +20,10 @@ MACHINE_GUI_CLASS = "bigscreen"
 MACHINE_KERNEL_PR = "ti"
 
 # Default providers, may need to override for specific machines
-PREFERRED_PROVIDER_virtual/kernel = "linux-ti-staging"
-PREFERRED_PROVIDER_virtual/bootloader = "u-boot-ti-staging"
-PREFERRED_PROVIDER_u-boot = "u-boot-ti-staging"
+PREFERRED_PROVIDER_virtual/kernel = "olli-linux"
+PREFERRED_PROVIDER_virtual/bootloader = "u-boot-olli"
+PREFERRED_PROVIDER_u-boot = "u-boot-olli"
+
 
 KERNEL_IMAGETYPE = "zImage"
 
@@ -38,7 +39,7 @@ UBOOT_LOADADDRESS = "0x80008000"
 # and u-boot.
 UBI_VOLNAME = "rootfs"
 
-EXTRA_IMAGEDEPENDS += "u-boot"
+EXTRA_IMAGEDEPENDS += "u-boot-olli"
 
 # List common SoC features, may need to add touchscreen for specific machines
 MACHINE_FEATURES = "kernel26 apm usbgadget usbhost vfat ext2 screen alsa ethernet sgx bluetooth"
