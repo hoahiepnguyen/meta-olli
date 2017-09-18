@@ -225,7 +225,7 @@ dark@hiepnguyen:~/yocto/meta-olli/scripts$ ./copy_boot.sh sdc
 
 ```
 
-This cript should be run very fast.
+This script should be run very fast.
 
 ### copy_rootfs.sh
 
