@@ -56,7 +56,7 @@ Choose #No to dash when prompted
 
 ## Clone the repository
 
-###Create the `yocto` folder to build
+### Create the `yocto` folder to build
 
 ```
 dark&hiepnguyen:~$ mkdir yocto
@@ -83,7 +83,7 @@ dark@hiepnguyen:~/yocto/poky$ git clone git://github.com:hoahiepnguyen/meta-olli
 
 ## Building
 
-###Initialize the build directory
+### Initialize the build directory
 
 Much of the following are only the conventions that I use. All of the paths to the meta-layers are configurable.
 
@@ -95,7 +95,7 @@ dark&hiepnguyen:/yocto~$ source poky/oe-init-build-env build
 
 The Yocto environment script will create the build directory if it does not already exist.
 
-###Customize the configuration files
+### Customize the configuration files
 
 There are some sample configuration files in the `meta-olli/conf` directory.
 
@@ -106,7 +106,7 @@ dark@hiepnguyen:~/yocto/poky$ cp meta-olli/conf/local.conf build/conf/local.conf
 dark@hiepnguyen:~/yocto/poky$ cp meta-olli/conf/bblayres.conf build/conf/bblayers.conf
 ```
 
-###Run the build
+### Run the build
 
 You need to source the Yocto environment into your shell before you can `use bitbake`. The `oe-init-build-env` will not overwrite your customized conf files.
 
@@ -144,7 +144,7 @@ After the build completes, the bootloader, kernel and rootfs image files can be 
 
 The `meta-olli/scipts` directory has some helper scripts to format and copy the files to a eMMC flash memory.
 
-###usb_flasher
+### usb_flasher
 
 This binary will boot the FIT image to external RAM on mainboard through micro-usb cable. Then, mount eMMC flash into PC Linux.
 
@@ -154,7 +154,7 @@ dark@hiepnguyen:~/yocto/meta-olli/scripts/booting/$ sudo ./usb_flasher
 
 ```
 
-###mk2parts.sh
+### mk2parts.sh
 
 This script will partition an eMMC with the minimal 2 partitions required for the boards.
 
@@ -179,7 +179,7 @@ sda      8:0    0 232,9G  0 disk
 
 Mainboard mounted at `sdc` on this Linux PC.
 
-####BE CAREFULY with this script. It will format any disk on your workstation
+#### BE CAREFULY with this script. It will format any disk on your workstation
 
 ```
 dark@hiepnguyen:~/yocto/meta-olli/scripts$ sudo ./mk2part.sh sdc
@@ -188,7 +188,7 @@ dark@hiepnguyen:~/yocto/meta-olli/scripts$ sudo ./mk2part.sh sdc
 
 You only have to format the eMMC flash once.
 
-###copy_boot.sh
+### copy_boot.sh
 
 This script copies the bootloader(MLO and u-boot) to the boot partition of the eMMC flash memory.
 
@@ -227,7 +227,7 @@ dark@hiepnguyen:~/yocto/meta-olli/scripts$ ./copy_boot.sh sdc
 
 This cript should be run very fast.
 
-###copy_rootfs.sh
+### copy_rootfs.sh
 
 This script copies the zImage kernel, the device tree binaries and the rest of the operating system to the root file system partition of the eMMC flash.
 
@@ -238,7 +238,7 @@ dark@hiepnguyen:~/yocto/meta-olli/scripts$ sudo ./copy_rootfs.sh sdc
 
 ```
 
-###bring_up.sh
+### bring_up.sh
 
 This script includes all the functions listed above. You must power on the mainboard, press the "boot configuration" button to boot from usb. It will call usb_flasher to boot FIT image on external RAM. After, mounted the eMMC flash memory into PC linux. Then, copies bootloader, zImage, device tree and rootfile system to the partition of the eMMC.
 
